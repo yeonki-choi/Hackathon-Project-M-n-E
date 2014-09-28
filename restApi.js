@@ -133,11 +133,7 @@ app.get( '/api/users', function( request, response ) {
 						if( users[i].score > curScore )
 							++ranking;
 					}
-					var curRanking = (100* ranking )/ userNo;
-					if(curRanking.undefined )
-						response.status(500).send( "Server is not correct!" );
-					else
-						response.status(200).send( 'you defeated ' + curRanking + ' percentage people!' );
+					response.status(200).send( 'you defeated ' + ranking + ' people!' );
 				}
 			})
 		}
@@ -169,11 +165,7 @@ app.post( '/api/users', function( request, response ) {
 						if( users[i].score > curScore )
 							++ranking;
 					}
-					var curRanking = (100* ranking )/ userNo;
-					if(curRanking.undefined )
-						response.status(500).send( "Server is not correct!" );
-					else
-						response.status(200).send( curName+' defeated ' + curRanking + ' percentage people!' );
+					response.status(200).send( curName+' defeated ' + ranking + ' people!' );
 				}
 			});
 			console.log('created..');
