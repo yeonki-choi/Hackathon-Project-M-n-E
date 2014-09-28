@@ -1,0 +1,11 @@
+{
+  "name": "Squid-VS-Donuts-Game",
+  "description": "a simple game for learning web technology",
+  "version": "1.0.0",
+  "dependencies": {
+    "express": "~4.8.5",
+    "socket.io": "~1.0.6",
+	"body-parser":"",
+    "mongoose": "~3.8.15"
+  }
+}

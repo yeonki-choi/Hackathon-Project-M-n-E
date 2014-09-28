@@ -9,16 +9,13 @@
 				background-color: #0f0f0f;
 			}
 		</style>
-		<script src="pixi.dev.js"></script>
-		<script src="taffydb-master/taffy.js"></script>
+		<script src="/pixi.dev.js"></script>
 	</head>
 	<body>
 		<font size="16" color="gray" face="verdana">Let's Concentrate...<BR/> on Autodesk Icons!</font>
 		<script>
 			// click number user use to finish the game
 			var clickCount = 0;
-			// database for the user record, can be sync with the server
-			var users = TAFFY([{name:"John",clicks:600},{name:"Kevin",clicks:500},{name:"Vijaya",clicks:300}]);
 			// first tile picked up by the player
 			var firstTile=null;
 			// second tile picked up by the player
@@ -43,18 +40,38 @@
 			loader.onComplete = onTilesLoaded
 			//begin load
 			loader.load();
-			// var HttpClient = function() {
-				// this.get = function(aUrl, aCallback) {
-					// anHttpRequest = new XMLHttpRequest();
-					// anHttpRequest.onreadystatechange = function() { 
-						// if (anHttpRequest.readyState == 4 && anHttpRequest.status == 200)
-							// aCallback(anHttpRequest.responseText);
-					// }
-
-					// anHttpRequest.open( "GET", aUrl, true );            
-					// anHttpRequest.send( null );
-				// }
-			// }
+			var HttpClient = function() {
+				this.get = function(aUrl, name, score, aCallback) {
+					anHttpRequest = new XMLHttpRequest();
+					anHttpRequest.onreadystatechange = function() { 
+						if (anHttpRequest.readyState == 4 && anHttpRequest.status == 200)
+							aCallback(anHttpRequest.responseText);
+					}
+					if( name == null )
+						anHttpRequest.open( "GET", aUrl, true ); 
+					else
+						anHttpRequest.open( "GET", aUrl+"?name="+name+"&score="+score, true ); 	
+					anHttpRequest.send( null );
+				}
+				
+				this.post = function(aUrl, name, score, aCallback){
+					anHttpRequest = new XMLHttpRequest();
+					
+					var data = new FormData();
+					data.append('name', name);
+					data.append('score', score);
+					
+					anHttpRequest.onreadystatechange = function(){
+						if(anHttpRequest.readyState == 4 && anHttpRequest.status == 200 )
+							aCallback(anHttpRequest.responseText);
+					}
+				
+					anHttpRequest.open("POST", aUrl, true );
+					
+					anHttpRequest.send(data);
+				
+				}
+			}
 			
 			//gameContainer
 			function onTilesLoaded(){
@@ -124,25 +141,13 @@
 												gameContainer.removeChild(secondTile);
 												firstTile=null;
 												secondTile=null;
-												if(gameContainer.children.length == 0){
-													// save the score to the database
-													users.insert({name:"Tom",clicks:clickCount});	
-													
-													var badCount = users({clicks:{'>':clickCount}}).count();
-													var totalUsers = users().count();
-													if( totalUsers > 0 )
-													{
-														// get the highest score from database, and calculate the ranking. 
-														var percentNo = (100*badCount)/totalUsers;
-														// var urlget = 'http://localhost:4711/api/users';
-														// aClient = new HttpClient();
-														// aClient.get(urlget, function(answer) {
-															// alert(answer);
-															// // do something with answer
-														// });												
-														
-														alert('Congratutions, You used ' + clickCount + ' steps to finish! Defeat ' + percentNo + '% people!');
-													}
+												// when finished, get the ranking for current user.
+												if(gameContainer.children.length >= 0){															
+													var urlget = 'http://localhost:4711/api/users';
+													aClient = new HttpClient();													
+													aClient.get(urlget, "John", clickCount, function(answer) {									
+														alert( 'Congratutions, You used ' + clickCount + ' steps to finish the game, ' + answer );
+													});												
 												}
 
 												canPick=true;
