@@ -1,7 +1,7 @@
 ---
 applications:
 - name: hack-yeonki
-  command: node hack-yeonki.js
+  command: node restApi.js
   memory: 256M
   services:
     autodb:
