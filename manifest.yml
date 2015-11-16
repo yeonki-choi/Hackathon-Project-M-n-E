@@ -1,8 +1,7 @@
 ---
-application:
+applications:
 - name: hack-yeonki
   memory: 256M
   services:
     autodb:
     type: mongodb
-
