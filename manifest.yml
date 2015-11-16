@@ -1,6 +1,7 @@
 ---
 applications:
 - name: hack-yeonki
+  command: node hack-yeonki.js
   memory: 256M
   services:
     autodb:
