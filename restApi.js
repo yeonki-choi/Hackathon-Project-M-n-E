@@ -2,9 +2,9 @@
 var application_root = __dirname,
     express = require( 'express' ), //Web framework
     path = require( 'path' ),           //Utilities for dealing with file paths
-	fs   = require( 'fs' ),
-	// mongoskin = require('mongoskin'),
-	bodyParser = require('body-parser'),
+    fs   = require( 'fs' ),
+    // mongoskin = require('mongoskin'),
+    bodyParser = require('body-parser'),
     mongoose = require( 'mongoose' );   
 	
 
@@ -28,7 +28,20 @@ var app = express();
 
 
 //Connect to database
-var db = mongoose.connect('mongodb://127.0.0.1:27017/test');
+//var db = mongoose.connect('mongodb://127.0.0.1:27017/test');
+if(process.env.VCAP_SERVICES){
+  var services = JSON.parse(process.env.VCAP_SERVICES);
+  var dbcreds = services['mongodb'][0].credentials;
+}
+
+if(dbcreds){
+  console.log(dbcreds);
+  // mongoose.connect(dbcreds.host, "test", dbcreds.port);
+  mongoose.connect(dbcreds.host, dbcreds.db, dbcreds.port, {user: dbcreds.username, pass: dbcreds.password});
+
+}else{
+  mongoose.connect("127.0.0.1", "test", 27017);
+}
 
 //Schema
 var UsersSchema = new mongoose.Schema({
@@ -41,9 +54,9 @@ mongoose.model( 'Users', UsersSchema );
 
 var User = mongoose.model('Users');
 
-
 app.use( bodyParser.json() );       // to support JSON-encoded bodies
-app.use( bodyParser.urlencoded() ); // to support URL-encoded bodies
+//app.use( bodyParser.urlencoded() ); // to support URL-encoded bodies
+app.use( bodyParser.json( { extended: true } ));
 
 app.use(express.static(__dirname + '/public'));
 
@@ -185,7 +198,9 @@ app.delete( '/api/users/:id', function( request, response ) {
 });
 
 //Start server
-var port = 4711;
+//var port = 4711;
+var port = process.env.VCAP_APP_PORT || 4711;
+
 app.listen( port, function() {
     console.log( 'Express server listening on port %d in %s mode', port, app.settings.env );
 });
