@@ -4,3 +4,5 @@ applications:
   memory: 256M
   services:
     autodb: mongodb
+#  url: 
+#  - ${name}.app.helionit.es
