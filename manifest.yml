@@ -5,4 +5,4 @@ applications:
   services:
     autodb: mongodb
   url: 
-  - ${name}.app.helionit.es
+  - ${name}.app.helionit.io
