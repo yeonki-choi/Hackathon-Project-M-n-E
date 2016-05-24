@@ -3,6 +3,7 @@ applications:
   buildpack: https://github.com/cloudfoundry/nodejs-buildpack.git#v1.3.4
   memory: 256M
   services:
-    autodb: mongodb
+    ${name}-db:
+      type: mongodb
   url: 
   - ${name}.app.helionit.io
