@@ -1,5 +1,6 @@
 applications:
 - name: hack-yeonki
+  buildpack: https://github.com/cloudfoundry/nodejs-buildpack.git#v1.3.4
   memory: 256M
   services:
     autodb: mongodb
