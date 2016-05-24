@@ -5,8 +5,8 @@ var application_root = __dirname,
     fs   = require( 'fs' ),
     // mongoskin = require('mongoskin'),
     bodyParser = require('body-parser'),
-    mongoose = require( 'mongoose' );   
-	
+    mongoose = require( 'mongoose' );
+    bson = require('bson');
 
 //Create server
 var app = express();
